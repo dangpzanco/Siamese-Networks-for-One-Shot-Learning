@@ -232,9 +232,9 @@ class SiameseNetwork:
         # Get a nice and pretty progress bar
         try:
             get_ipython # check if inside an IPython/Jupyter shell
-            progressBar = tqdm.tqdm()
+            progressBar = tqdm.tqdm(range(number_of_iterations))
         except:
-            progressBar = tqdm.tqdm_notebook()
+            progressBar = tqdm.tqdm_notebook(range(number_of_iterations))
 
         # Train loop
         for iteration in progressBar:
