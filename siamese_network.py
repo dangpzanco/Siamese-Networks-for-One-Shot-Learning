@@ -136,6 +136,10 @@ class SiameseNetwork:
         prediction = Dense(units=1, activation='sigmoid')(l1_distance)
         self.model = Model(
             inputs=[input_image_1, input_image_2], outputs=prediction)
+        
+        # Print Model Summary
+        convolutional_net.summary()
+        self.model.summary()
 
         # Define the optimizer and compile the model
         optimizer = Modified_SGD(
