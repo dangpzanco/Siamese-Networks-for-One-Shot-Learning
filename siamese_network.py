@@ -16,6 +16,8 @@ import numpy as np
 from omniglot_loader import OmniglotLoader
 from modified_sgd import Modified_SGD
 
+import tqdm
+
 
 class SiameseNetwork:
     """Class that constructs the Siamese Net for training
@@ -221,15 +223,21 @@ class SiameseNetwork:
         train_losses = np.zeros(shape=(evaluate_each))
         train_accuracies = np.zeros(shape=(evaluate_each))
         count = 0
-        earrly_stop = 0
+
         # Stop criteria variables
         best_validation_accuracy = 0.0
         best_accuracy_iteration = 0
         validation_accuracy = 0.0
 
+        # Get a nice and pretty progress bar
+        try:
+            get_ipython # check if inside an IPython/Jupyter shell
+            progressBar = tqdm.tqdm()
+        except:
+            progressBar = tqdm.tqdm_notebook()
 
         # Train loop
-        for iteration in range(number_of_iterations):
+        for iteration in progressBar:
 
             # train set
             images, labels = self.omniglot_loader.get_train_batch()
@@ -250,9 +258,9 @@ class SiameseNetwork:
 
             # validation set
             count += 1
-            print('Iteration %d/%d: Train loss: %f, Train Accuracy: %f, lr = %f' %
-                  (iteration + 1, number_of_iterations, train_loss, train_accuracy, K.get_value(
-                      self.model.optimizer.lr)))
+            # print('Iteration %d/%d: Train loss: %f, Train Accuracy: %f, lr = %f' % (iteration + 1, number_of_iterations, train_loss, train_accuracy, K.get_value(self.model.optimizer.lr)))
+            iter_description = f'Iteration {iteration + 1}/{number_of_iterations}: Train loss: {train_loss}, Train Accuracy: {train_accuracy}, lr = {K.get_value(self.model.optimizer.lr)}'
+            progressBar.set_description(desc=iter_description)
 
             # Each 100 iterations perform a one_shot_task and write to tensorboard the
             # stored losses and accuracies
